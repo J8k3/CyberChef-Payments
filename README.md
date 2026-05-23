@@ -23,9 +23,7 @@ Covers EMV (ARQC/ARPC, issuer-script MAC, PIN change), PIN blocks (formats, encr
 
 **[cyberchef.jacobmarks.com](https://cyberchef.jacobmarks.com)** — all payment operations are available under the **Payments** category. Click any recipe link in this document to open it directly in the live tool.
 
-<!-- screenshot placeholder -->
-<!-- ![UI overview](screenshots/cyberchef-payments-ui-overview.png) -->
-<!-- *[Screenshot: CyberChef UI with Payments category expanded, showing operation groups]* -->
+> 📸 **Screenshot** — *CyberChef UI with Payments category expanded, showing operation groups*
 
 ---
 
@@ -64,9 +62,7 @@ Notes:
 - `EMV Parse TLV` decodes BER-TLV encoded EMV data (DE 55, ICC responses, GPO responses)
 - APC cross-validation note: `verify_auth_request_cryptogram` requires AES-256 E0 keys; AES-128 is rejected by the service
 
-<!-- screenshot placeholder -->
-<!-- ![EMV ARQC workflow](screenshots/emv-arqc-workflow.png) -->
-<!-- *[Screenshot: CDOL1 assembly → ARQC generation → ARQC verification, showing each step's output]* -->
+> 📸 **Screenshot** — *CDOL1 assembly → ARQC generation → ARQC verification, showing each step's output*
 
 ---
 
@@ -103,9 +99,7 @@ Operations: `PIN Block Build`, `PIN Block Parse`, `PIN Block Translate`, `PIN Bl
 
 Supported formats: ISO 9564 Format 0, Format 1, Format 3. `PIN Block Translate Encrypted` uses TDES-ECB; accepts 2-key (16-byte) or 3-key (24-byte) keys.
 
-<!-- screenshot placeholder -->
-<!-- ![PIN block translation](screenshots/pin-block-translate-encrypted.png) -->
-<!-- *[Screenshot: Encrypted PIN block re-keying between ZPKs with JSON inspection output showing decrypt → translate → re-encrypt]* -->
+> 📸 **Screenshot** — *Encrypted PIN block re-keying between ZPKs with JSON inspection output showing decrypt → translate → re-encrypt*
 
 ---
 
@@ -157,9 +151,7 @@ Notes:
 - `DUKPT Derive AES Key`: ANSI X9.24-3, 12-byte KSN, IK-based, AES-128. Verified against official X9.24-3 §6.3 test vectors.
 - **DUKPT TDES data encryption variant note**: CyberChef follows the ANSI X9.24-1 "Data" variant (bytes 5+13 XOR `0xFF`). APC uses a different undocumented internal variant for data encryption. DUKPT MAC operations align correctly between the two.
 
-<!-- screenshot placeholder -->
-<!-- ![AES DUKPT derivation chain](screenshots/aes-dukpt-derivation.png) -->
-<!-- *[Screenshot: AES DUKPT key derivation showing BDK → IK → transaction key → working key chain in JSON output]* -->
+> 📸 **Screenshot** — *AES DUKPT key derivation showing BDK → IK → transaction key → working key chain in JSON output*
 
 ---
 
@@ -216,9 +208,7 @@ These focus on transport-syntax triage: command identification, header/trailer, 
 
 Coverage: Thales payShield 10K (two-char command codes, configured header length), Futurex Excrypt Enterprise SSP v.2 (bracket-delimited tag/value, `AO` field as command code).
 
-<!-- screenshot placeholder -->
-<!-- ![HSM command triage](screenshots/hsm-thales-command-parse.png) -->
-<!-- *[Screenshot: Raw payShield host message parsed into header, command code, and field split]* -->
+> 📸 **Screenshot** — *Raw payShield host message parsed into header, command code, and field split*
 
 ---
 
