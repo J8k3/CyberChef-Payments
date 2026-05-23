@@ -254,6 +254,10 @@ Full-flow recipes combining multiple operations. Open any link to see the live c
 
 HSM-style operations were compared against [AWS Payment Cryptography (APC)](https://aws.amazon.com/payment-cryptography/) where APC exposed comparable behavior, using fixed test vectors imported as APC managed keys (2026-05-19).
 
+**Why APC:** APC is a managed cloud HSM service — no physical hardware required, API-accessible, and inexpensive for low-volume test calls. It made structured cross-validation practical without needing a payShield or Futurex in the loop. Where APC behavior differed from CyberChef, the difference is documented below, not silently papered over.
+
+**How testing was run:** A fixed set of known test vectors (keys, PANs, PINs, plaintexts — documented in the implementation repo's `PAYMENT_RECIPES.md`) was imported into APC as managed keys. CyberChef operations were run with matching inputs and the outputs were compared directly against APC API responses. Testing used the APC MCP server (`apc-agent`) to drive API calls interactively, with results recorded here. No automation script; this was a structured manual comparison run in a single session.
+
 | Operation | Status | Notes |
 |---|---|---|
 | Payment Encrypt / Decrypt (TDES ECB) | ✅ Match | |
