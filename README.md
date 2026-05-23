@@ -250,6 +250,19 @@ Full-flow recipes combining multiple operations. Open any link to see the live c
 
 ---
 
+## JSON Output Mode
+
+Most payment operations expose a **JSON output** toggle (last arg). The behavior is consistent by design:
+
+- **`json=false` (default):** Raw hex output — suitable for piping into a downstream operation via `Register` + `$R0`.
+- **`json=true`:** Structured JSON — suitable for inspection, debugging, and cross-validation. Shows inputs, intermediate values, and the final result.
+
+Generate operations default to `json=false` so their output can feed directly into a verify step without extraction. Verify operations default to `json=true` because the terminal result is a `"valid": true/false` decision that needs context.
+
+**DUKPT derive operations in `json=true` mode** show the full derivation chain: KSN, BDK/IK input, IPEK/IK, intermediate keys, and the final derived key.
+
+---
+
 ## APC Cross-Validation
 
 HSM-style operations were compared against [AWS Payment Cryptography (APC)](https://aws.amazon.com/payment-cryptography/) where APC exposed comparable behavior, using fixed test vectors imported as APC managed keys (2026-05-19).
