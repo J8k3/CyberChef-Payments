@@ -60,6 +60,7 @@ Notes:
 - ARPC supports Method 1 (Visa/Amex/Discover) and Method 2 (Mastercard) — select the correct method in the args
 - `EMV Parse TLV` decodes BER-TLV encoded EMV data (DE 55, ICC responses, GPO responses)
 - APC cross-validation note: `verify_auth_request_cryptogram` requires AES-256 E0 keys; AES-128 is rejected by the service
+- The generate+verify and ARPC recipes use CyberChef's `Register` operation to capture the generated key as `$R0`. It can then be referenced by name in downstream operation args — the same random key flows through generate and verify without being hardcoded. The ARPC recipe captures the ARQC output as `$R1` and passes it into `EMV Build ARPC Data` the same way.
 
 > 📸 **Screenshot** — *CDOL1 assembly → ARQC generation → ARQC verification, showing each step's output*
 
@@ -140,15 +141,31 @@ Note: ISO 9797-1 Algorithm 3 is Retail MAC (TDES outer CBC). DUKPT MAC methods e
 
 | Recipe | Link |
 |---|---|
+**TDES DUKPT**
+
+| Recipe | Link |
+|---|---|
 | TDES DUKPT: derive IPEK from BDK | [open →](https://cyberchef.jacobmarks.com/#recipe=Comment('TDES%20DUKPT%20derive%20IPEK%20from%20BDK')Key_Generate('TDES%20Double-length%20(16%20bytes)',16,true,false)DUKPT_Derive_TDES_Key('Derive%20IPEK','FFFF9876543210E00008','None',false)) |
 | TDES DUKPT: derive PIN session key | [open →](https://cyberchef.jacobmarks.com/#recipe=Comment('TDES%20DUKPT%20derive%20PIN%20session%20key')Key_Generate('TDES%20Double-length%20(16%20bytes)',16,true,false)DUKPT_Derive_TDES_Key('Derive%20Session%20Key','FFFF9876543210E00008','PIN',false)) |
 
-Operations: `DUKPT Derive TDES Key`, `DUKPT Derive AES Key`
+Notes:
+- ANSI X9.24-1, 10-byte KSN, IPEK-based. Verified against published X9.24-1 test vector.
+- **Data encryption variant**: CyberChef follows the ANSI X9.24-1 "Data" variant (bytes 5+13 XOR `0xFF`). APC uses a different undocumented internal variant for data encryption. DUKPT MAC operations align correctly between the two.
+
+**AES DUKPT**
+
+| Recipe | Link |
+|---|---|
+| AES DUKPT: derive IK from BDK | *coming soon* |
+| AES DUKPT: derive working key — PIN encryption | *coming soon* |
+| AES DUKPT: derive working key — MAC generation | *coming soon* |
 
 Notes:
-- `DUKPT Derive TDES Key`: ANSI X9.24-1, 10-byte KSN, IPEK-based. Verified against published X9.24-1 test vector.
-- `DUKPT Derive AES Key`: ANSI X9.24-3, 12-byte KSN, IK-based, AES-128. Verified against official X9.24-3 §6.3 test vectors.
-- **DUKPT TDES data encryption variant note**: CyberChef follows the ANSI X9.24-1 "Data" variant (bytes 5+13 XOR `0xFF`). APC uses a different undocumented internal variant for data encryption. DUKPT MAC operations align correctly between the two.
+- ANSI X9.24-3, 12-byte KSN, IK-based, AES-128. Verified against official X9.24-3 §6.3 test vectors.
+- JSON output shows the full BDK → IK → transaction key → working key derivation chain.
+- AES-192/256 not yet implemented.
+
+Operations: `DUKPT Derive TDES Key`, `DUKPT Derive AES Key`
 
 > 📸 **Screenshot** — *AES DUKPT key derivation showing BDK → IK → transaction key → working key chain in JSON output*
 
@@ -222,6 +239,7 @@ Full-flow recipes combining multiple operations. Open any link to see the live c
 | EMV issuer-script MAC | `Key Generate` → `EMV Build Script Data` → `EMV Generate MAC` | [open →](https://cyberchef.jacobmarks.com/#recipe=Comment('EMV%20issuer-script%20MAC')Key_Generate('AES-128%20(16%20bytes)',16,true,false)Register('(%5B%5C%5Cs%5C%5CS%5D*)',true,false,false)EMV_Build_Script_Data('84','PUT%20DATA','00','42','0102030405060708090A','Hex')EMV_Generate_MAC('$R0','Method%202',8,true)) |
 | Encrypted PIN re-keying between ZPKs | `PIN Block Translate Encrypted` with JSON inspection | [open →](https://cyberchef.jacobmarks.com/#recipe=Comment('Encrypted%20PIN%20block%20re-keying%20between%20ZPKs')PIN_Block_Translate_Encrypted('DDDDEEEEFFFFAAAABBBBCCCCDDDDEEEE','ISO%20Format%200','5432101234567890','AABBCCDDEEFF00112233445566778899','ISO%20Format%200','5432101234567890',true)&input=N0YzODFEQkY5RjY5MDZDNA) |
 | TDES DUKPT: BDK → IPEK → session key | `Key Generate` → `DUKPT Derive TDES Key` (IPEK) → `DUKPT Derive TDES Key` (session key) | [open →](https://cyberchef.jacobmarks.com/#recipe=Comment('TDES%20DUKPT%20BDK%20to%20IPEK%20to%20session%20key')Key_Generate('TDES%20Double-length%20(16%20bytes)',16,true,false)DUKPT_Derive_TDES_Key('Derive%20IPEK','FFFF9876543210E00008','None',false)) |
+| AES DUKPT: BDK → IK → working key | `Key Generate` → `DUKPT Derive AES Key` | *coming soon* |
 | IBM 3624 offset generate → verify | `PIN IBM 3624 Offset Generate` → `PIN IBM 3624 Verify` | [open →](https://cyberchef.jacobmarks.com/#recipe=Comment('IBM%203624%20generate%20then%20verify')PIN_Generate(4,'PIN%20digits','')PIN_IBM_3624_Offset_Generate('0123456789ABCDEFFEDCBA9876543210','0123456789012345','5432101234567890','F',false)PIN_IBM_3624_Verify('0123456789ABCDEFFEDCBA9876543210','0123456789012345','5432101234567890','F','1234',true)) |
 | VISA PVV generate → verify | `VISA PVV Generate` → `VISA PVV Verify` | [open →](https://cyberchef.jacobmarks.com/#recipe=Comment('VISA%20PVV%20generate%20then%20verify')PIN_Generate(4,'PIN%20digits','')VISA_PVV_Generate('0123456789ABCDEFFEDCBA9876543210','5432101234567890',1,false)VISA_PVV_Verify('0123456789ABCDEFFEDCBA9876543210','5432101234567890',1,'1234',true)) |
 | Key generate → KCV cross-check | `Key Generate` → `Payment Calculate KCV` | [open →](https://cyberchef.jacobmarks.com/#recipe=Comment('Generate%20key%20and%20compute%20KCV')Key_Generate('AES-128%20(16%20bytes)',16,false,false)Payment_Calculate_KCV('Hex','AES-CMAC%20(Empty)',6)) |
