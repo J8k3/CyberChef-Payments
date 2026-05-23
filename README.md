@@ -294,6 +294,23 @@ HSM-style operations were compared against [AWS Payment Cryptography (APC)](http
 
 ---
 
+## Test Suite
+
+Operations are covered by a unit test suite in the implementation repo:
+**[`tests/operations/tests/Payment.mjs`](https://github.com/J8k3/CyberChef/blob/master/tests/operations/tests/Payment.mjs)**
+
+Test vector sources, by priority:
+1. **Published standard** — ANSI X9.24-1 (TDES DUKPT), X9.24-3 §6.3 (AES DUKPT), NIST SP 800-38B (CMAC/KCV)
+2. **APC cross-validated** — operations where no public standard vector exists; AWS Payment Cryptography used as the reference implementation (see [APC Cross-Validation](#apc-cross-validation))
+3. **Internal round-trip** — encrypt → decrypt or generate → verify, where neither a standard vector nor an APC path is available
+
+Run the suite:
+```bash
+npm test
+```
+
+---
+
 ## Validation Status
 
 | Operation | Validation class | Primary source |
