@@ -25,7 +25,8 @@ Covers EMV (ARQC/ARPC, issuer-script MAC, PIN change), PIN blocks (formats, encr
 
 The operations are implemented in **[J8k3/CyberChef](https://github.com/J8k3/CyberChef)**. Run the live tool above or self-host with Docker.
 
-> 📸 **Screenshot** — *CyberChef UI with Payments category expanded, showing operation groups*
+![CyberChef UI with Payments category expanded](https://github.com/J8k3/CyberChef-Payments/blob/main/screenshots/2026-05-22%2023_22_31-CyberChef.png)
+> 📸 *CyberChef UI with Payments category expanded, showing operation groups*
 
 ---
 
@@ -62,7 +63,8 @@ Notes:
 - APC cross-validation note: `verify_auth_request_cryptogram` requires AES-256 E0 keys; AES-128 is rejected by the service
 - The generate+verify and ARPC recipes use CyberChef's `Register` operation to capture the generated key as `$R0`. It can then be referenced by name in downstream operation args — the same random key flows through generate and verify without being hardcoded. The ARPC recipe captures the ARQC output as `$R1` and passes it into `EMV Build ARPC Data` the same way.
 
-> 📸 **Screenshot** — *CDOL1 assembly → ARQC generation → ARQC verification, showing each step's output*
+![ARQC/ARPC](https://github.com/J8k3/CyberChef-Payments/blob/main/screenshots/2026-05-22%2023_24_24-Comment%2C%205%20more%20-%20CyberChef.png)
+> 📸 *CDOL1 assembly → ARQC generation → ARQC verification, showing each step's output*
 
 ---
 
@@ -99,7 +101,8 @@ Operations: `PIN Block Build`, `PIN Block Parse`, `PIN Block Translate`, `PIN Bl
 
 Supported formats: ISO 9564 Format 0, Format 1, Format 3. `PIN Block Translate Encrypted` uses TDES-ECB; accepts 2-key (16-byte) or 3-key (24-byte) keys.
 
-> 📸 **Screenshot** — *Encrypted PIN block re-keying between ZPKs with JSON inspection output showing decrypt → translate → re-encrypt*
+![PIN Translate](https://github.com/J8k3/CyberChef-Payments/blob/main/screenshots/2026-05-22%2023_26_02-Comment%2C%20PIN%20Block%20Translate%20Encrypted%20-%20CyberChef.png)
+> 📸 *Encrypted PIN block re-keying between ZPKs with JSON inspection output showing decrypt → translate → re-encrypt*
 
 ---
 
@@ -167,7 +170,8 @@ Notes:
 
 Operations: `DUKPT Derive TDES Key`, `DUKPT Derive AES Key`
 
-> 📸 **Screenshot** — *AES DUKPT key derivation showing BDK → IK → transaction key → working key chain in JSON output*
+![TDES DUKPT](https://github.com/J8k3/CyberChef-Payments/blob/main/screenshots/2026-05-22%2023_34_49-Comment%2C%20Key%20Generate%2C%20DUKPT%20Derive%20TDES%20Key%20-%20CyberChef.png)
+> 📸 *TDES DUKPT key derivation showing BDK → IK → transaction key → working key chain in JSON output*
 
 ---
 
@@ -224,7 +228,8 @@ These focus on transport-syntax triage: command identification, header/trailer, 
 
 Coverage: Thales payShield 10K (two-char command codes, configured header length), Futurex Excrypt Enterprise SSP v.2 (bracket-delimited tag/value, `AO` field as command code).
 
-> 📸 **Screenshot** — *Raw payShield host message parsed into header, command code, and field split*
+![payShield Command Parser](https://github.com/J8k3/CyberChef-Payments/blob/main/screenshots/2026-05-22%2023_30_39-Comment%2C%20HSM%20Parse%20Thales%20Command%20-%20CyberChef.png)
+> 📸 *Raw payShield host message parsed into header, command code, and field split*
 
 ---
 
