@@ -242,7 +242,7 @@ Full-flow recipes combining multiple operations. Open any link to see the live c
 
 ## APC Cross-Validation
 
-All HSM-mimic operations were compared against [AWS Payment Cryptography (APC)](https://aws.amazon.com/payment-cryptography/) using fixed test vectors imported as APC managed keys (2026-05-19). Keys used for testing only and scheduled for deletion after.
+All HSM-mimic operations were compared against [AWS Payment Cryptography (APC)](https://aws.amazon.com/payment-cryptography/) using fixed test vectors imported as APC managed keys (2026-05-19).
 
 | Operation | Status | Notes |
 |---|---|---|
