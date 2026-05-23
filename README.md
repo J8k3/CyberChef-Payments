@@ -1,6 +1,6 @@
 # CyberChef Payments
 
-**Payment cryptography workflows for engineers — inspectable, composable, shareable, and free of HSM dependencies during development.**
+**Payment cryptography workflows built on CyberChef. See exactly what's happening at every step — share a recipe link, inspect intermediate values, and validate without an HSM.**
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-cyberchef.jacobmarks.com-blue)](https://cyberchef.jacobmarks.com)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/J8k3/CyberChef/blob/master/LICENSE)
@@ -11,32 +11,31 @@
 
 ## What This Is
 
-A workflow library for payment cryptography built on [CyberChef](https://github.com/gchq/CyberChef). Every operation is a composable pipeline step — you see exactly what's happening at each stage, share a recipe link with a colleague, or reproduce a result without access to an HSM.
+A workflow library for payment cryptography built on [CyberChef](https://github.com/gchq/CyberChef). Every operation is a step in a pipeline you can inspect, share as a URL, and run entirely in a browser without cloud accounts or hardware.
 
-Covers EMV (ARQC/ARPC, issuer-script MAC, PIN change), PIN blocks (formats, encrypted translation, IBM 3624, VISA PVV), MAC algorithms (AES-CMAC, ISO 9797, DUKPT, AS2805), DUKPT key derivation (TDES and AES), card validation data (CVV/CVV2/iCVV), key management utilities, TR-31/TR-34 parsing, and HSM command inspection (Thales payShield, Futurex Excrypt).
+Covers EMV (ARQC/ARPC, issuer-script MAC, PIN change), PIN blocks (formats, encrypted translation, IBM 3624, VISA PVV), MAC (AES-CMAC, ISO 9797, DUKPT, AS2805), DUKPT key derivation (TDES and AES), card validation data (CVV/CVV2/iCVV), key management, TR-31/TR-34 parsing, and HSM command inspection for Thales payShield and Futurex Excrypt.
 
-> **Not production tooling.** This is for development, testing, debugging, and interoperability work. Operations use clear keys in software. Do not use with production cryptographic keys, real PANs, or live PIN blocks.
+> **Software emulation, not a replacement for an HSM.** Operations use clear keys in a browser. Do not use with production keys, real PANs, or live PIN blocks.
 
 ---
 
 ## Live Demo
 
-**[cyberchef.jacobmarks.com](https://cyberchef.jacobmarks.com)** — all payment operations are available under the **Payments** category. Click any recipe link in this document to open it directly in the live tool.
+**[cyberchef.jacobmarks.com](https://cyberchef.jacobmarks.com)** — all payment operations are under the **Payments** category. Click any recipe link in this document to open it directly.
+
+The operations are implemented in **[J8k3/CyberChef](https://github.com/J8k3/CyberChef)**. Run the live tool above or self-host with Docker.
 
 > 📸 **Screenshot** — *CyberChef UI with Payments category expanded, showing operation groups*
 
 ---
 
-## Why Workflows, Not Just Operations
+## Why Workflows
 
-Every HSM vendor and cloud service implements the same cryptographic primitives. The value in payment cryptography work — especially during integration, migration, and debugging — is in the pipeline:
+Every HSM vendor and cloud service implements the same cryptographic primitives. The differentiator in integration, migration, and debugging work is visibility into the pipeline.
 
-- **Inspectable intermediate state** — see the CDOL1 preimage before computing an ARQC, see the decrypted PIN block before re-keying it, see the exact MAC input before generating a MAC
-- **Shareable recipes** — send a colleague a URL that opens the exact same operation with the same parameters pre-filled
-- **Reproducible results** — validate your production implementation against a known-good software reference without a second HSM
-- **Step-through debugging** — CyberChef's breakpoint feature lets you pause between operations and inspect what the data looks like at each stage
+CyberChef's recipe model is well-suited to payment cryptography because operations chain — you can see the CDOL1 preimage before computing an ARQC, the decrypted PIN block before re-keying it, the exact MAC input before generating a MAC. You can share a recipe URL with a vendor that opens the same operation with the same parameters pre-filled. You can validate your production implementation against a known-good software reference without a second HSM.
 
-These properties make it practical to debug a MAC mismatch with a network processor, verify an ARQC implementation before going to the scheme, or walk a vendor through exactly what your system is computing.
+CyberChef's breakpoint feature lets you pause between steps and inspect what the data looks like at each stage. For debugging a MAC mismatch or verifying an ARQC implementation before going to the scheme, that's the useful property — not the algorithm itself.
 
 ---
 
@@ -305,14 +304,11 @@ This repo is part of a small ecosystem of payment engineering tools:
 
 ---
 
-## Non-Goals and Disclaimers
+## Disclaimers
 
-- Not a certified HSM, production key-custody platform, or PCI-scoped control surface
-- Not an endorsement by or affiliation with AWS, Thales, Futurex, or any card scheme
-- Not a replacement for scheme-certified testing tools or a QSA-equivalent review
-- All operations use clear keys in software — there is no key custody, no tamper resistance, and no HSM boundary
+This is software emulation. There is no key custody, no tamper resistance, and no HSM boundary. It is not a certified HSM, not a PCI-scoped control, and not affiliated with AWS, Thales, Futurex, or any card scheme.
 
-Production payment systems require certified hardware security modules, proper key ceremonies, and PCI DSS compliance controls. These tools are for development, testing, debugging, and education.
+Production payment systems require certified hardware and proper PCI DSS controls. These tools are for development, testing, and debugging.
 
 ---
 
