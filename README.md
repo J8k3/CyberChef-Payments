@@ -277,8 +277,9 @@ HSM-style operations were compared against [AWS Payment Cryptography (APC)](http
 | MAC Generate / Verify (ISO 9797-3 Alg 1) | ✅ Match | |
 | MAC Generate / Verify (AES-CMAC) | ✅ Match | |
 | Card Validation Data (CVV / CVV2) | ✅ Match | |
-| VISA PVV Generate / Verify | ✅ Match | APC `generate_pin_data` blocked by compliance warning; cross-validated via `verify_pin_data` |
-| IBM 3624 Offset Generate / Verify | ✅ Match | Cross-validated via APC `verify_pin_data` |
+| VISA PVV Generate / Verify | ✅ Match | Cross-validated via both `generate_pin_data` and `verify_pin_data`. Confirmed vector: PIN=1234, PAN=111111111111, PVKI=1, V2PVK (KCV 664CDA) → PVV=3361. TSP construction: 11 rightmost PAN digits (excl. check digit) \|\| PVKI \|\| PIN[0] \|\| zero-pad to 16 — PIN[0] inclusion is the non-obvious part. |
+| IBM 3624 Offset Generate / Verify | ✅ Match | Cross-validated via APC `verify_pin_data`. Confirmed vector: PIN=1234, PAN=111111111111, V1PVK (KCV 85A8D3) → offset=9237. APC requires a digits-only offset string — strip any trailing `F` padding (payShield pads to 12H with `F`) before calling APC. |
+| AES-CMAC Verify (truncated output) | ❌ APC constraint | APC `verify_mac` for AES-CMAC requires the full 16-byte (32H) MAC. Truncated output (e.g., 8H / 4 bytes as returned by payShield M8) causes a `ValidationException`. Workaround: call `generate_mac` and compare the leading N bytes client-side. Not a CyberChef bug — APC limitation. |
 | DUKPT TDES Key Derivation | ✅ Verified | Matches published ANSI X9.24-1 test vector |
 | DUKPT AES Key Derivation | ✅ Verified | Verified against ANSI X9.24-3 §6.3 official test vectors |
 | DUKPT TDES MAC | ✅ Match | APC `DukptKeyVariant=REQUEST` aligns with CyberChef "MAC Request" |
@@ -291,6 +292,9 @@ HSM-style operations were compared against [AWS Payment Cryptography (APC)](http
 - APC `mac_length` is in nibbles (hex digits), not bytes — pass `16` to get an 8-byte MAC
 - EMV MAC padding: both generate and verify must use the same method (Method 1 or Method 2)
 - EMV ARQC on APC requires an AES-256 E0 master key
+- APC `verify_mac` for AES-CMAC requires the full 32H MAC — truncated CMAC cannot be verified; call `generate_mac` and compare the prefix instead
+- APC `verify_pin_data` for IBM 3624 requires a digits-only PIN offset (`^[0-9]+$`) — strip trailing `F` padding before calling APC (payShield pads to 12 hex chars with `F`)
+- VISA PVV TSP includes PIN[0] (first digit of PIN): TSP = PAN[rightmost 11 digits excl. check] + PVKI + PIN[0] + zero-pad to 16 digits
 
 ---
 
